@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h2>hello world</h2>
-    </body>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
+    <link rel="shortcut icon" href="#">
+</head>
+
+<body>
+    <h1>Upload Audio File</h1>
+    <form method="POST" enctype="multipart/form-data" action="/transcript">
+        <input type="file" name="audio" accept=".mp3, .wav"/>
+        <input type="submit" value="Transcribe" />
+    </form>
+    <div>
+        <h2>Transcription:</h2>
+        <p>{{ transcript }}</p>
+    </div>
+    {% if audio %}
+    <h2>Audio:</h2>
+        <audio controls>
+            <source src="{{ audio }}" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio>
+    {%endif%}
+</body>
+
 </html>

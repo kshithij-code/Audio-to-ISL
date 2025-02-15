@@ -1,2 +1,4 @@
 .venv
 frontend javascript/node_modules
+static/uploads
+static/script.js
