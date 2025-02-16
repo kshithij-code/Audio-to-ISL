@@ -47,6 +47,29 @@ def transcript():
         transcript = f"An error occured: {e}"
     return render_template('index.html', transcript=transcript, audio=audio_url)
 
+@app.route("/send")
+def send():
+    raisedFinger={
+        "duration": 0,
+        "wrist": 0,
+        "thumb": 0.9, "index": 0, "middle": 1.25, "ring": 1.25, "pinky": 1.15,
+        "thumbz": -0.15, "indexz": -0.30, "middlez": -0.08, "ringz": -0.22, "pinkyz": -0.52,
+    }
+    raisedHand={
+        "duration": 0,
+        "wrist": 0,
+        "thumb": 0.9, "index": 0, "middle": 1.25, "ring": 1.25, "pinky": 1.15,
+        "thumbz": -0.15, "indexz": -0.30, "middlez": -0.08, "ringz": -0.22, "pinkyz": -0.52,
+    }
+    rockOn={
+        "duration": 0,
+        # "bg": 0x4b46b2, "hand": 0xe7a183, "shirt": 0x303030, vest: 0xe7d55c,
+        "wrist": 0.1,
+        "thumb": 0.25, "index": 0.25, "middle": 1.1, "ring": 1.1, "pinky": 0.25,
+        "thumbz": -0.15, "indexz": -0.30, "middlez": -0.08, "ringz": -0.22, "pinkyz": -0.52,
+      }
+    return jsonify(rockOn)
+
 
 
 
