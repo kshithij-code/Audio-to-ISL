@@ -3,6 +3,7 @@ import speech_recognition as sr
 from flask_cors import CORS
 import os
 from pydub import AudioSegment
+from model import AudioLSTM
 
 app = Flask(__name__)
 CORS(app)
@@ -47,28 +48,61 @@ def transcript():
         transcript = f"An error occured: {e}"
     return render_template('index.html', transcript=transcript, audio=audio_url)
 
-@app.route("/send")
+@app.route("/send",methods=['POST',"GET"])
 def send():
-    raisedFinger={
-        "duration": 0,
-        "wrist": 0,
-        "thumb": 0.9, "index": 0, "middle": 1.25, "ring": 1.25, "pinky": 1.15,
-        "thumbz": -0.15, "indexz": -0.30, "middlez": -0.08, "ringz": -0.22, "pinkyz": -0.52,
-    }
-    raisedHand={
-        "duration": 0,
-        "wrist": 0,
-        "thumb": 0.9, "index": 0, "middle": 1.25, "ring": 1.25, "pinky": 1.15,
-        "thumbz": -0.15, "indexz": -0.30, "middlez": -0.08, "ringz": -0.22, "pinkyz": -0.52,
-    }
-    rockOn={
-        "duration": 0,
-        # "bg": 0x4b46b2, "hand": 0xe7a183, "shirt": 0x303030, vest: 0xe7d55c,
-        "wrist": 0.1,
-        "thumb": 0.25, "index": 0.25, "middle": 1.1, "ring": 1.1, "pinky": 0.25,
-        "thumbz": -0.15, "indexz": -0.30, "middlez": -0.08, "ringz": -0.22, "pinkyz": -0.52,
-      }
-    return jsonify(rockOn)
+    if request.method == 'POST':
+        data = request.json
+        print(data)
+        A={
+            "duration": 0,
+            "wrist": 0.04,
+            "thumb": 0,
+            "index": 1.10,
+            "middle": 1.25,
+            "ring": 1.25,
+            "pinky": 1.15,
+            "thumbz": 0.15,
+            "indexz": -0.3,
+            "middlez": -0.08,
+            "ringz": -0.22,
+            "pinkyz": -0.52,
+        }
+        B={
+            "duration": 0,
+            "wrist": 0.14,
+            "thumb": 0.80,
+            "index": 1.03,
+            "middle": 0,
+            "ring": 0,
+            "pinky": 0,
+            "thumbz": -0.4,
+            "indexz": -0.3,
+            "middlez": -0.08,
+            "ringz": -0.22,
+            "pinkyz": -0.52,
+        }
+        X={
+            "duration": 0,
+            "wrist": 0.35,
+            "thumb": 0.90,
+            "index": 0,
+            "middle": 1.25,
+            "ring": 1.25,
+            "pinky": 1.15,
+            "thumbz": -0.4,
+            "indexz": 0,
+            "middlez": -0.08,
+            "ringz": -0.10,
+            "pinkyz": -0.39,
+        }
+        
+        if data['name'] == "C:\\fakepath\\A.wav":
+            return jsonify(A)
+        elif data['name'] == "C:\\fakepath\\B.wav":
+            return jsonify(B)
+        else:
+            return jsonify(X)
+    return jsonify(X)
 
 
 

@@ -76,11 +76,11 @@ const gltfLoader = new GLTFLoader();
 gltfLoader.load("hand2.glb", (gltf) => {
   const model = gltf.scene.children[1];
   scene.add(model);
-  model.position.setX(3);
+  model.position.setX(2);
   model.position.setY(-2);
   model.position.setZ(0);
   // model.scale.set(0.9, 0.9, 0.9)
-  model.rotation.y = Math.PI * -0.2;
+  model.rotation.y = Math.PI * -0.15;
 
 //   setMaterials();
 //   setBones();
@@ -88,11 +88,11 @@ gltfLoader.load("hand2.glb", (gltf) => {
 gltfLoader.load("hand2.glb", (gltf) => {
     const model = gltf.scene.children[0];
     scene.add(model);
-    model.position.setX(-3);
+    model.position.setX(-2);
     model.position.setY(-2);
     model.position.setZ(0);
     // model.scale.set(0.9, 0.9, 0.9)
-    model.rotation.y = Math.PI * -0.2;
+    model.rotation.y = Math.PI * -0.15;
   
     setMaterials();
     setBones();
@@ -418,7 +418,15 @@ const setBones = () => {
 
   async function fetched() {
     try {
-      const response = await fetch("http://127.0.0.1:5000/send");
+    let name="";
+    name=document.getElementById("audio").value;
+    const response = await fetch("http://127.0.0.1:5000/send",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({name}),
+    });
       const data = await response.json();
       console.log(data);
 
@@ -435,7 +443,7 @@ const setBones = () => {
       PARAMS.ringz = data.ringz !== undefined ? data.ringz : PARAMS.ringz;
       PARAMS.pinkyz = data.pinkyz !== undefined ? data.pinkyz : PARAMS.pinkyz;
 
-      return data;
+      return PARAMS;
     } catch (error) {
       console.error("Error fetching data from Flask:", error);
       console.log("Using default values");
@@ -458,45 +466,63 @@ const setBones = () => {
 
   raisedHand.addEventListener("click", () => {
     const tlRaisedHand = GSAP.timeline();
+
     tlRaisedHand
+      // First hand
       .to(PARAMS, fetched(), "same")
-      .to(wristRotation, { duration: 0.5, x: 0 }, "same")
-      .to(thumbRotation, { duration: 0.5, x: 0 }, "same")
-      .to(indexRotation, { duration: 0.5, x: 0 }, "same")
-      .to(middleRotation, { duration: 0.5, x: 0 }, "same")
-      .to(ringRotation, { duration: 0.5, x: 0 }, "same")
-      .to(pinkyRotation, { duration: 0.5, x: 0 }, "same")
-      .to(thumbRotation, { duration: 0.5, z: -0.15 }, "same")
-      .to(indexRotation[0], { duration: 0.5, z: -0.3 }, "same")
-      .to(middleRotation[0], { duration: 0.5, z: -0.08 }, "same")
-      .to(ringRotation[0], { duration: 0.5, z: 0.22 }, "same")
-      .to(pinkyRotation[0], { duration: 0.5, z: 0.52 }, "same")
+      .to(wristRotation, { duration: 0.5, x: PARAMS.wrist }, "same")
+      .to(thumbRotation, { duration: 0.5, x: PARAMS.thumb }, "same")
+      .to(indexRotation, { duration: 0.5, x: PARAMS.index }, "same")
+      .to(middleRotation, { duration: 0.5, x: PARAMS.middle }, "same")
+      .to(ringRotation, { duration: 0.5, x: PARAMS.ring }, "same")
+      .to(pinkyRotation, { duration: 0.5, x: PARAMS.pinky }, "same")
+      .to(thumbRotation, { duration: 0.5, z: PARAMS.thumbz }, "same")
+      .to(indexRotation[0], { duration: 0.5, z: PARAMS.indexz }, "same")
+      .to(middleRotation[0], { duration: 0.5, z: PARAMS.middlez }, "same")
+      .to(ringRotation[0], { duration: 0.5, z: -PARAMS.ringz }, "same")
+      .to(pinkyRotation[0], { duration: 0.5, z: -PARAMS.pinkyz }, "same")
+      // Second hand (mirrored)
+      .to(wristRotation_, { duration: 0.5, x: PARAMS.wrist }, "same")
+      .to(thumbRotation_, { duration: 0.5, x: PARAMS.thumb }, "same")
+      .to(indexRotation_, { duration: 0.5, x: PARAMS.index }, "same")
+      .to(middleRotation_, { duration: 0.5, x: PARAMS.middle }, "same")
+      .to(ringRotation_, { duration: 0.5, x: PARAMS.ring }, "same")
+      .to(pinkyRotation_, { duration: 0.5, x: PARAMS.pinky }, "same")
+      .to(thumbRotation_, { duration: 0.5, z: PARAMS.thumbz }, "same")
+      .to(indexRotation_[0], { duration: 0.5, z: PARAMS.indexz }, "same")
+      .to(middleRotation_[0], { duration: 0.5, z: PARAMS.middlez }, "same")
+      .to(ringRotation_[0], { duration: 0.5, z: -PARAMS.ringz }, "same")
+      .to(pinkyRotation_[0], { duration: 0.5, z: -PARAMS.pinkyz }, "same")
+      // Additional animations for wrist rotations
+    //   .to(wristRotation, { duration: 0.5, y: -PARAMS.wrist * 0.5 }, "same")
+    //   .to(wristRotation_, { duration: 0.5, y: -PARAMS.wrist * 0.5 }, "same")
+      // Update UI
       .call(() => {
         pane.refresh();
       })
       .play();
   });
 
-  raisedHand.addEventListener("click", () => {
-    const tlRaisedHand = GSAP.timeline();
-    tlRaisedHand
-      .to(PARAMS, fetched(), "same")
-      .to(wristRotation_, { duration: 1, x: 0 }, "same") 
-      .to(thumbRotation_, { duration: 1, x: 0 }, "same")
-      .to(indexRotation_, { duration: 1, x: 0 }, "same")
-      .to(middleRotation_, { duration: 1, x: 0 }, "same")
-      .to(ringRotation_, { duration: 1, x: 0 }, "same")
-      .to(pinkyRotation_, { duration: 1, x: 0 }, "same")
-      .to(thumbRotation_, { duration: 1, z: -0.15 }, "same")
-      .to(indexRotation_[0], { duration: 1, z: -0.3 }, "same")
-      .to(middleRotation_[0], { duration: 1, z: -0.08 }, "same")
-      .to(ringRotation_[0], { duration: 1, z: 0.22 }, "same")
-      .to(pinkyRotation_[0], { duration: 1, z: 0.52 }, "same")
-      .call(() => {
-        pane.refresh();
-      })
-      .play();
-  });
+//   raisedHand.addEventListener("click", () => {
+//     const tlRaisedHand = GSAP.timeline();
+//     tlRaisedHand
+//       .to(PARAMS, fetched(), "same") 
+//       .to(wristRotation_, { duration: 0.5, x: PARAMS.wrist }, "same")
+//       .to(thumbRotation_, { duration: 0.5, x: PARAMS.thumb }, "same") 
+//       .to(indexRotation_, { duration: 0.5, x: PARAMS.index }, "same")
+//       .to(middleRotation_, { duration: 0.5, x: PARAMS.middle }, "same")
+//       .to(ringRotation_, { duration: 0.5, x: PARAMS.ring }, "same")
+//       .to(pinkyRotation_, { duration: 0.5, x: -PARAMS.pinky }, "same")
+//       .to(thumbRotation_, { duration: 0.5, z: PARAMS.thumbz }, "same")
+//       .to(indexRotation_[0], { duration: 0.5, z: PARAMS.indexz }, "same")
+//       .to(middleRotation_[0], { duration: 0.5, z: PARAMS.middlez }, "same")
+//       .to(ringRotation_[0], { duration: 0.5, z: -PARAMS.ringz }, "same")
+//       .to(pinkyRotation_[0], { duration: 0.5, z: -PARAMS.pinkyz }, "same")
+//       .call(() => {
+//         pane.refresh();
+//       })
+//       .play();
+//   });
 
 //   raisedFinger.addEventListener("click", () => {
 //     const tlRaisedFinger = GSAP.timeline();
